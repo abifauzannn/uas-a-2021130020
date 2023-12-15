@@ -92,25 +92,24 @@ class MenuController extends Controller
         'kategori' => 'required|string',
     ]);
 
-    // Extract the first 3 characters of the updated 'kategori' and make them uppercase
+
     $categoryAbbreviation = strtoupper(substr($validated['kategori'], 0, 3));
 
-    // Extract the existing random 3 digits from the 'id'
+
     $existingRandomDigits = substr($menu->id, 3);
 
-    // Combine the 'categoryAbbreviation' and existing random digits
+
     $generatedID = $categoryAbbreviation . $existingRandomDigits;
 
-    // Update the 'menu' instance with the new values
     $menu->nama = $validated['nama'];
     $menu->rekomendasi = $request->has('rekomendasi');
     $menu->harga = $validated['harga'];
     $menu->kategori = $validated['kategori'];
 
-    // Set the 'id' attribute using the generated ID
+
     $menu->id = $generatedID;
 
-    // Save the changes to the 'menu' instance
+
     $menu->save();
 
     return redirect()->route('menus.index');

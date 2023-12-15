@@ -37,16 +37,15 @@ class MenuController extends Controller
         'kategori' => 'required|string',
     ]);
 
-    // Extract the first 3 characters of the 'kategori' and make them uppercase
     $categoryAbbreviation = strtoupper(substr($validated['kategori'], 0, 3));
 
-    // Generate a random 3-digit number
+
     $randomDigits = str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT);
 
-    // Combine the 'categoryAbbreviation' and random digits
+
     $generatedID = $categoryAbbreviation . $randomDigits;
 
-    // Create a new 'menu' instance
+
     $menu = new Menu([
         'id' => $generatedID,
         'nama' => $validated['nama'],
@@ -55,7 +54,7 @@ class MenuController extends Controller
         'kategori' => $validated['kategori'],
     ]);
 
-    // Save the 'menu' instance to the database
+
     $menu->save();
 
     return redirect()->route('index')->with('success', 'Menu added successfully.');

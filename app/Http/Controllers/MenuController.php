@@ -9,9 +9,7 @@ use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
 
@@ -31,37 +29,39 @@ class MenuController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'nama' => 'required|string',
-            'rekomendasi' => 'nullable|boolean',
-            'harga' => 'required|numeric',
-            'kategori' => 'required|string',
-        ]);
+{
+    $validated = $request->validate([
+        'nama' => 'required|string',
+        'rekomendasi' => 'nullable|boolean',
+        'harga' => 'required|numeric',
+        'kategori' => 'required|string',
+    ]);
 
-        // Extract the first 3 characters of the 'nama' and make them uppercase
-        $categoryAbbreviation = strtoupper(substr($validated['kategori'], 0, 3));
+    // Extract the first 3 characters of the 'kategori' and make them uppercase
+    $categoryAbbreviation = strtoupper(substr($validated['kategori'], 0, 3));
 
-        // Get the maximum 'id' as an integer
-        $maxId = (int) Menu::max('id');
+    // Generate a random 3-digit number
+    $randomDigits = str_pad(rand(0, 999), 3, '0', STR_PAD_LEFT);
 
-        // Generate a new 'menu' instance
-        $menu = new Menu([
-            'nama' => $validated['nama'],
-            'rekomendasi' => $request->has('rekomendasi'),
-            'harga' => $validated['harga'],
-            'kategori' => $validated['kategori'],
-        ]);
+    // Combine the 'categoryAbbreviation' and random digits
+    $generatedID = $categoryAbbreviation . $randomDigits;
 
-        // Set the 'id' attribute using the generated ID
-        $generatedID = $categoryAbbreviation . str_pad($maxId + 1, 3, '0', STR_PAD_LEFT);
-        $menu->id = $generatedID;
+    // Create a new 'menu' instance
+    $menu = new Menu([
+        'id' => $generatedID,
+        'nama' => $validated['nama'],
+        'rekomendasi' => $request->has('rekomendasi'),
+        'harga' => $validated['harga'],
+        'kategori' => $validated['kategori'],
+    ]);
 
-        // Save the 'menu' instance to the database
-        $menu->save();
+    // Save the 'menu' instance to the database
+    $menu->save();
 
-        return redirect()->route('menus.index');
-    }
+    return redirect()->route('index')->with('success', 'Menu added successfully.');
+}
+
+
 
     /**
      * Display the specified resource.
@@ -92,10 +92,14 @@ class MenuController extends Controller
         'kategori' => 'required|string',
     ]);
 
-    // Extract the first 3 characters of the 'kategori' and make them uppercase
+    // Extract the first 3 characters of the updated 'kategori' and make them uppercase
     $categoryAbbreviation = strtoupper(substr($validated['kategori'], 0, 3));
 
-    $maxId = (int) Menu::max('id');
+    // Extract the existing random 3 digits from the 'id'
+    $existingRandomDigits = substr($menu->id, 3);
+
+    // Combine the 'categoryAbbreviation' and existing random digits
+    $generatedID = $categoryAbbreviation . $existingRandomDigits;
 
     // Update the 'menu' instance with the new values
     $menu->nama = $validated['nama'];
@@ -103,15 +107,15 @@ class MenuController extends Controller
     $menu->harga = $validated['harga'];
     $menu->kategori = $validated['kategori'];
 
-    // If 'id' is derived from 'kategori', update it accordingly
-    $generatedID = $categoryAbbreviation . str_pad($maxId + 1, 3, '0', STR_PAD_LEFT);
-        $menu->id = $generatedID;
+    // Set the 'id' attribute using the generated ID
+    $menu->id = $generatedID;
 
     // Save the changes to the 'menu' instance
     $menu->save();
 
     return redirect()->route('menus.index');
 }
+
 
     /**
      * Remove the specified resource from storage.
@@ -120,6 +124,6 @@ class MenuController extends Controller
     {
         $menu->delete();
 
-    return redirect()->route('menus.index')->with('success', 'Book deleted successfully.');
+    return redirect()->route('menus.index')->with('success', 'Menu deleted successfully.');
     }
 }

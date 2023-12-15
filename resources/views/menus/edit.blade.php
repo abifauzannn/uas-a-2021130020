@@ -3,7 +3,10 @@
 @extends('layouts.master')
 
 @section('content')
-    <h1>Edit Menu</h1>
+
+    <div class="mt-4 p-5 rounded">
+        <h1>Edit Menu</h1>
+    </div>
 
     @if ($errors->any())
         <div class="alert alert-danger mt-4">
@@ -15,26 +18,62 @@
         </div>
     @endif
 
-    <form action="{{ route('menus.update', $menu) }}" method="POST">
-        @method('PUT')
-        @csrf
+    <div class="row my-4">
+        <div class="col-12 px-5">
+            <form method="POST" action="{{ route('menus.update', $menu->id) }}">
+                @csrf
+                @method('PUT') <!-- Use the PUT method for updates -->
 
-        <label for="nama">Nama:</label>
-        <input type="text" id="nama" name="nama" value="{{ old('nama', $menu->nama) }}" required>
+                <div class="row mb-2">
+                    <div class="col-2">
+                        <label for="nama">Nama:</label>
+                    </div>
+                    <div class="col-2">
+                        <input type="text" id="nama" name="nama" value="{{ old('nama', $menu->nama) }}" required>
+                    </div>
+                </div>
 
-        <label for="rekomendasi">Rekomendasi:</label>
-        <input type="checkbox" id="rekomendasi" name="rekomendasi" value="1" {{ $menu->rekomendasi ? 'checked' : '' }}>
+                <div class="row mb-2">
+                    <div class="col-2">
+                        <label for="kategori">Kategori:</label>
+                    </div>
+                    <div class="col-2">
+                        <input type="text" id="kategori" name="kategori" value="{{ old('kategori', $menu->kategori) }}" required>
+                    </div>
+                </div>
 
+                <div class="row mb-2">
+                    <div class="col-2">
+                        <label for="harga">Harga:</label>
+                    </div>
+                    <div class="col-2">
+                        <input type="number" id="harga" name="harga" step="0.01" value="{{ old('harga', $menu->harga) }}" required>
+                    </div>
+                </div>
 
-        <label for="harga">Harga:</label>
-        <input type="number" id="harga" name="harga" value="{{ old('harga', $menu->harga) }}" step="0.01" required>
+                <div class="row mb-2">
+                    <div class="col-2">
+                        <label for="rekomendasi">Rekomendasi:</label>
+                    </div>
+                    <div class="col-2">
+                        <input type="checkbox" id="rekomendasi" name="rekomendasi" value="1" {{ $menu->rekomendasi ? 'checked' : '' }}>
+                    </div>
+                </div>
 
-        <label for="kategori">Kategori:</label>
-        <input type="text" id="kategori" name="kategori" value="{{ old('kategori', $menu->kategori) }}" required>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <button type="submit">Update</button>
+                    </div>
+                </div>
 
-        <button type="submit">Update</button>
-    </form>
+                <div class="row mb-2">
+                    <div class="col-4">
+                        <a href="{{ route('menus.index') }}">Back to List</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
-
-    <a href="{{ route('menus.index') }}">Back to List</a>
 @endsection
+

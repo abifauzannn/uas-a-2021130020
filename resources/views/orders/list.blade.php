@@ -3,6 +3,7 @@
 @section('title', 'Daftar Order')
 
 @section('content')
+
 <div class="mt-4 p-5 bg-black text-white rounded mb-4">
     <h1>All Orders</h1>
     {{-- Add button --}}
